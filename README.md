@@ -11,6 +11,11 @@ Tech Stack used
 - [Octokit](https://octokit.github.io/rest.js/)
 - [TipTap WYSIWYG](https://tiptap.dev/)
 
+## Route List (Main)
+- /
+- /admin/dashboard
+- /admin/login
+
 ## How to use it
 - As always start with npm install
 - Create your github personal token, you can read it [here](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
