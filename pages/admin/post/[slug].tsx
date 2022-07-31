@@ -18,8 +18,7 @@ import { POST_TYPE, RESPONSE_POST } from "types/types";
 import useUpdate from "hooks/post/update";
 import useRemove from "hooks/post/remove";
 import fetcher from "utils/fetcher";
-import NextHead from "next/head"
-
+import NextHead from "next/head";
 
 export default function UpdatePost() {
   const [title, settitle] = useState<string>("");
@@ -27,7 +26,6 @@ export default function UpdatePost() {
   const router = useRouter();
   const { slug } = router.query;
 
-  
   const { data: dataPost, error: errorPost } = useSwr<RESPONSE_POST<POST_TYPE>>(
     slug ? `/api/admin/post/${slug}` : null,
     fetcher
@@ -39,7 +37,7 @@ export default function UpdatePost() {
   const [remove, statusRemove, errorRemove, loadingRemove] = useRemove();
 
   useEffect(() => {
-    if (!loadingUpdate && statusUpdate!=null) {
+    if (!loadingUpdate && statusUpdate != null) {
       if (statusUpdate === "success") {
         router.push("/admin/dashboard");
         toast({
@@ -48,7 +46,7 @@ export default function UpdatePost() {
           status: "success",
           duration: 5000,
         });
-      }else{
+      } else {
         toast({
           title: `Post ${title} Failed to Removed`,
           isClosable: true,
@@ -60,8 +58,7 @@ export default function UpdatePost() {
   }, [loadingUpdate]);
 
   useEffect(() => {
-    if (!loadingRemove && statusRemove !=null)
-     {
+    if (!loadingRemove && statusRemove != null) {
       if (statusRemove === "success") {
         router.push("/admin/dashboard");
         toast({
@@ -103,56 +100,55 @@ export default function UpdatePost() {
 
       {dataPost && dataPost.data && (
         <>
-        <NextHead>
-          <title>Edit {dataPost.data.title}</title>
-        </NextHead>
-        <Box
-          as="form"
-          w={["full", "full", "2xl"]}
-          px={[0, 0, 5]}
-          onSubmit={(e) => {
-            e.preventDefault();
-            _submit(dataPost.data.title);
-          }}
-        >
-          <Box mt={10}>
-            <FormLabel htmlFor="title">Title</FormLabel>
-            <Input
-              isDisabled={true}
-              value={dataPost.data.title}
-              onChange={(e: any) => settitle(e.target.value)}
-              required
-              id="title"
-              placeholder="Title"
-              size={"lg"}
-            />
-          </Box>
-          <Editor />
-          <Flex mt={5} gap={2} justifyContent="right">
-            <NextLink href={"/admin/dashboard"}>
-              <Button type="button" colorScheme={"gray"}>
-                Cancel
-              </Button>
-            </NextLink>
-            <Button
-              type="button"
-              colorScheme={"red"}
-              isLoading={loadingRemove}
-              disabled={loadingUpdate||loadingRemove}
-              onClick={() => _delete(dataPost.data.title)}
-            >
-              Delete
-            </Button>
-            <Button
-              type="submit"
-              colorScheme={"green"}
-              isLoading={loadingUpdate}
-              disabled={loadingUpdate||loadingRemove}
-            >
-              Update
-            </Button>
-          </Flex>
-        </Box>
+          <NextHead>
+            <title>Edit {dataPost.data.title}</title>
+          </NextHead>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              _submit(dataPost.data.title);
+            }}
+          >
+            <Box w={["full", "full", "2xl"]} px={[0, 0, 5]}>
+              <Box mt={10}>
+                <FormLabel htmlFor="title">Title</FormLabel>
+                <Input
+                  isDisabled={true}
+                  value={dataPost.data.title}
+                  onChange={(e: any) => settitle(e.target.value)}
+                  required
+                  id="title"
+                  placeholder="Title"
+                  size={"lg"}
+                />
+              </Box>
+              <Editor />
+              <Flex mt={5} gap={2} justifyContent="right">
+                <NextLink href={"/admin/dashboard"}>
+                  <Button type="button" colorScheme={"gray"}>
+                    Cancel
+                  </Button>
+                </NextLink>
+                <Button
+                  type="button"
+                  colorScheme={"red"}
+                  isLoading={loadingRemove}
+                  disabled={loadingUpdate || loadingRemove}
+                  onClick={() => _delete(dataPost.data.title)}
+                >
+                  Delete
+                </Button>
+                <Button
+                  type="submit"
+                  colorScheme={"green"}
+                  isLoading={loadingUpdate}
+                  disabled={loadingUpdate || loadingRemove}
+                >
+                  Update
+                </Button>
+              </Flex>
+            </Box>
+          </form>
         </>
       )}
     </LayouDashboard>
