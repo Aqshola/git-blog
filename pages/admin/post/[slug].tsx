@@ -8,19 +8,20 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import useTipTap from "../../../components/Editor/useTipTap";
-import LayouDashboard from "../../../components/Layout/LayouDashboard";
+import useTipTap from "components/Editor/useTipTap";
+import LayouDashboard from "components/Layout/LayouDashboard";
 import useSwr, { useSWRConfig } from "swr";
 import { useToast } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import NextLink from "next/link";
-import { POST_TYPE, RESPONSE_POST } from "../../../types/types";
+import { POST_TYPE, RESPONSE_POST } from "types/types";
 import useUpdate from "hooks/post/update";
 import useRemove from "hooks/post/remove";
 import fetcher from "utils/fetcher";
-type Props = {};
+import NextHead from "next/head"
 
-export default function UpdatePost({}: Props) {
+
+export default function UpdatePost() {
   const [title, settitle] = useState<string>("");
   const toast = useToast();
   const router = useRouter();
@@ -40,7 +41,7 @@ export default function UpdatePost({}: Props) {
   useEffect(() => {
     if (!loadingUpdate && statusUpdate!=null) {
       if (statusUpdate === "success") {
-        router.push("/dashboard");
+        router.push("/admin/dashboard");
         toast({
           title: `Post ${title} Updated`,
           isClosable: true,
@@ -101,6 +102,10 @@ export default function UpdatePost({}: Props) {
       )}
 
       {dataPost && dataPost.data && (
+        <>
+        <NextHead>
+          <title>Edit {dataPost.data.title}</title>
+        </NextHead>
         <Box
           as="form"
           w={["full", "full", "2xl"]}
@@ -124,7 +129,7 @@ export default function UpdatePost({}: Props) {
           </Box>
           <Editor />
           <Flex mt={5} gap={2} justifyContent="right">
-            <NextLink href={"/dashboard"}>
+            <NextLink href={"/admin/dashboard"}>
               <Button type="button" colorScheme={"gray"}>
                 Cancel
               </Button>
@@ -148,6 +153,7 @@ export default function UpdatePost({}: Props) {
             </Button>
           </Flex>
         </Box>
+        </>
       )}
     </LayouDashboard>
   );

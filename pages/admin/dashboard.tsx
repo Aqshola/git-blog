@@ -7,15 +7,19 @@ import NextLink from "next/link";
 import useSWR from "swr";
 import fetcher from "utils/fetcher";
 import usePaging from "components/Pagination/Paging";
+import NextHead from "next/head"
 
-type Props = {};
 
-export default function Dashboard({}: Props) {
+
+export default function Dashboard() {
   const { data } = useSWR("/api/admin/post/get", fetcher);
   const [Paging, dataPaging] = usePaging();
 
   return (
     <LayouDashboard>
+      <NextHead>
+        <title>Dashboard</title>
+      </NextHead>
       <Heading size={"2xl"}>Post</Heading>
       <NextLink href={"/admin/post/create"} passHref aria-label="New Post">
         <Button mb={"10"} colorScheme={"green"} mt="10">
@@ -38,7 +42,7 @@ export default function Dashboard({}: Props) {
         {data &&
           data.data.length > 0 &&
           data.data
-            .slice(dataPaging.active, dataPaging.length)
+            .slice(dataPaging.active, dataPaging.active + dataPaging.length)
             .map((el: any, i: number) => (
               <NextLink passHref href={`/admin/post/${el.slug}`} key={el.slug}>
                 <a>
@@ -47,7 +51,9 @@ export default function Dashboard({}: Props) {
               </NextLink>
             ))}
       </Stack>
-      {data && <Paging data={data.data} />}
+      <Box w={["full", "full", "xl"]} >
+        {data && <Paging data={data.data} />}
+      </Box>
     </LayouDashboard>
   );
 }
