@@ -18,7 +18,7 @@ export default function Create({}: Props) {
   const [create, status, error, loading] = useCreate();
 
   useEffect(() => {
-    if (!loading) {
+    if (!loading && status!== null) {
       if( status === "success"){
 
         router.push("/admin/dashboard");
