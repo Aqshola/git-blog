@@ -1,19 +1,14 @@
 import React from "react";
 import { Box, Flex, Heading, Input, Text } from "@chakra-ui/react";
-import useTipTap from "components/Editor.tsx/useTipTap";
+import useTipTap from "components/Editor/useTipTap";
+import LayoutPublic from "components/Layout/LayoutPublic";
 
 type Props = {};
 
 export default function Detail() {
-    const [Editor, content] = useTipTap("lalatina",false);
+  const [Editor] = useTipTap("lalatina",false);
   return (
-    <>
-      <Flex p={"10"} justifyContent="space-between" alignItems={"center"}>
-        <Heading textColor={"facebook.700"} fontSize={"2xl"}>
-          Git-Blog
-        </Heading>
-        <Input w="48" placeholder="Search" />
-      </Flex>
+    <LayoutPublic>
       <Box p="10">
         <Heading as="h2" size={"lg"} textAlign="center">
           Kenapa Banteng Menangis?
@@ -23,6 +18,6 @@ export default function Detail() {
       <Box w={"full"} px={["10","10","20"]} mt={10}>
         <Editor  border={false} toolbar={false}/>
       </Box>
-    </>
+    </LayoutPublic>
   );
 }

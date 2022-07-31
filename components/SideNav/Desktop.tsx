@@ -10,11 +10,12 @@ import {
   Divider,
 } from "@chakra-ui/react";
 
-import { Avatar, AvatarBadge, AvatarGroup } from "@chakra-ui/react";
+import { Avatar} from "@chakra-ui/react";
+import { signOut, useSession } from "next-auth/react";
 
-type Props = {};
-
-export default function Desktop({}: Props) {
+export default function Desktop() {
+  const {data} =useSession()
+  
   return (
     <GridItem
       colSpan={2}
@@ -27,7 +28,7 @@ export default function Desktop({}: Props) {
       <Box>
         <Text>Welcome Back</Text>
         <Flex mt={5} alignItems="center" gap={2}>
-          <Avatar name="Dan Abrahmov" src="https://bit.ly/dan-abramov" />
+          <Avatar name={data?.user?.name||""} src={data?.user?.image||""} />
           <Heading size={"md"} as="h3">
             Aqshola
           </Heading>
@@ -45,7 +46,14 @@ export default function Desktop({}: Props) {
           Post
         </Button>
       </Stack>
-      <Button mt={"auto"} width="fit-content">Log out</Button>
+
+      <Button
+        mt={"auto"}
+        width="fit-content"
+        onClick={() => signOut({ callbackUrl: "/admin/login" })}
+      >
+        Log out
+      </Button>
     </GridItem>
   );
 }

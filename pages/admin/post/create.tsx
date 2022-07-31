@@ -1,6 +1,6 @@
 import { Box, Button, Flex, FormLabel, Heading, Input } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import useTipTap from "components/Editor.tsx/useTipTap";
+import useTipTap from "components/Editor/useTipTap";
 import LayouDashboard from "components/Layout/LayouDashboard";
 import { useSWRConfig } from "swr";
 import { useToast } from "@chakra-ui/react";

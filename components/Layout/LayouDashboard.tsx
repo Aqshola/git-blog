@@ -1,30 +1,32 @@
-import React from "react";
-import {
-  Box,
-  Container,
-  Flex,
-  Grid,
-  GridItem,
-  Heading,
-  SimpleGrid,
-  Stack,
-  StackDivider,
-  Text,
-  Button,
-  Divider,
-} from "@chakra-ui/react";
+import React, { useEffect } from "react";
+import { Box, Grid, GridItem } from "@chakra-ui/react";
 
-import { Avatar, AvatarBadge, AvatarGroup } from "@chakra-ui/react";
 import SideDesktop from "../SideNav/Desktop";
-import { HamburgerIcon } from "@chakra-ui/icons";
 import SideMobile from "../SideNav/Mobile";
-import Card from "../Card/Card";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 type Props = {
   children: React.ReactNode;
 };
 
 export default function LayouDashboard({ ...props }: Props) {
+  const { data, status } = useSession();
+  const loading = status === "loading";
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading) {
+      if (!data) {
+        router.push("/admin/login?error=true");
+      }
+    }
+  }, [loading]);
+
+  if (typeof window !== undefined && loading) {
+    return null;
+  }
+
   return (
     <Box width={"full"}>
       <SideMobile />
