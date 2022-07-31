@@ -19,7 +19,7 @@ export default function Create({}: Props) {
 
   useEffect(() => {
     if (!loading && status === "success") {
-      router.push("/dashboard");
+      router.push("/admin/dashboard");
       toast({
         title: "Post Created Successfuly",
         isClosable: true,

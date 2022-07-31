@@ -3,6 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { HTMLContent } from "@tiptap/react";
 import GithubAPI from "utils/GithubAPI";
 import { POST_TYPE, RESPONSE_POST } from "types/types";
+import parseContentFromGithub from "utils/parseContentFromGithub";
 
 type BodyReq = {
   title: string;
@@ -77,65 +78,57 @@ export default async function handler(
         repo: process.env.REPO_NAME || "",
       });
 
-      if (Array.isArray(indexJson.data)) {
-      } else {
-        let parsedIndexJson = indexJson.data as any;
-        //@ts-nocheck
-        let JsonData = JSON.parse(
-          Buffer.from(parsedIndexJson.content, "base64").toString()
-        ) as Array<any>;
+      let JsonData = parseContentFromGithub<any>(indexJson.data);
+      const objectPost = {
+        title: title,
+        path: `post/${slug}/content.html`,
+        createAt: new Date(),
+        slug: slug,
+      };
 
-        const objectPost = {
-          title: title,
-          path: `post/${slug}/content.html`,
-          createAt: new Date(),
-          slug: slug,
-        };
+      JsonData.unshift(objectPost);
 
-        JsonData.unshift(objectPost);
+      const pr = await github.createPullRequest({
+        owner: username.data.login,
+        repo: process.env.REPO_NAME || "",
+        title: `Create new post ${title}`,
+        body: "",
+        head: slug,
+        createWhenEmpty: true,
 
-        const pr = await github.createPullRequest({
+        base: "main" /* optional: defaults to default branch */,
+        update:
+          false /* optional: set to `true` to enable updating existing pull requests */,
+        forceFork:
+          false /* optional: force creating fork even when user has write rights */,
+        changes: [
+          {
+            /* optional: if `files` is not passed, an empty commit is created instead */
+            files: {
+              [`post/${slug}/content.html`]: content,
+              [`index.json`]: JSON.stringify(JsonData),
+            },
+            commit: "NEW POST",
+          },
+        ],
+      });
+
+      if (pr) {
+        await github.rest.pulls.merge({
           owner: username.data.login,
           repo: process.env.REPO_NAME || "",
-          title: `Create new post ${title}`,
-          body: "",
-          head: slug,
-          createWhenEmpty: true,
-
-          base: "main" /* optional: defaults to default branch */,
-          update:
-            false /* optional: set to `true` to enable updating existing pull requests */,
-          forceFork:
-            false /* optional: force creating fork even when user has write rights */,
-          changes: [
-            {
-              /* optional: if `files` is not passed, an empty commit is created instead */
-              files: {
-                [`post/${slug}/content.html`]: content,
-                [`index.json`]: JSON.stringify(JsonData),
-              },
-              commit: "NEW POST",
-            },
-          ],
+          pull_number: pr?.data.number,
         });
-
-        if (pr) {
-          await github.rest.pulls.merge({
-            owner: username.data.login,
-            repo: process.env.REPO_NAME || "",
-            pull_number: pr?.data.number,
-          });
-          return res
-            .status(200)
-            .send({ data: { ...objectPost, content }, status: "success" });
-        } else {
-          return res
-            .status(500)
-            .send({ data: null, status: "failed", errorMsg: "API ERROR" });
-        }
+        return res
+          .status(200)
+          .send({ data: { ...objectPost, content }, status: "success" });
+      } else {
+        return res
+          .status(500)
+          .send({ data: null, status: "failed", errorMsg: "API ERROR" });
       }
     } catch (error) {
-      console.log(error);
+      res.status(500).send({ data: null, status: "failed", errorMsg: error });
     }
   } catch (error) {
     res.status(500).send({ data: null, status: "failed", errorMsg: error });

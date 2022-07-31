@@ -28,7 +28,11 @@ export default function Detail() {
 
   return (
     <LayoutPublic>
-      {!dataPost && <Spinner />}
+      {!dataPost && (
+        <Box w={"full"} display="flex" justifyContent={"center"} py="10">
+          <Spinner mx={"auto"} my="auto" />
+        </Box>
+      )}
       {dataPost && (
         <>
           <NextHead>
