@@ -37,37 +37,36 @@ export default function Create({}: Props) {
     <LayouDashboard>
       <Heading size={"2xl"}>Create Post</Heading>
 
-      <Box
-        as="form"
-        w={["full", "full", "2xl"]}
-        px={[0, 0, 5]}
+      <form
         onSubmit={(e) => {
           e.preventDefault();
           _submit();
         }}
       >
-        <Box mt={10}>
-          <FormLabel htmlFor="title">Title</FormLabel>
-          <Input
-            onChange={(e: any) => settitle(e.target.value)}
-            required
-            id="title"
-            placeholder="Title"
-            size={"lg"}
-          />
+        <Box w={["full", "full", "2xl"]} px={[0, 0, 5]}>
+          <Box mt={10}>
+            <FormLabel htmlFor="title">Title</FormLabel>
+            <Input
+              onChange={(e: any) => settitle(e.target.value)}
+              required
+              id="title"
+              placeholder="Title"
+              size={"lg"}
+            />
+          </Box>
+          <Editor />
+          <Flex mt={5} gap={5} justifyContent="right">
+            <Button
+              type="submit"
+              colorScheme={"green"}
+              isLoading={loading}
+              disabled={loading}
+            >
+              Submit
+            </Button>
+          </Flex>
         </Box>
-        <Editor />
-        <Flex mt={5} gap={5} justifyContent="right">
-          <Button
-            type="submit"
-            colorScheme={"green"}
-            isLoading={loading}
-            disabled={loading}
-          >
-            Submit
-          </Button>
-        </Flex>
-      </Box>
+      </form>
     </LayouDashboard>
   );
 }
