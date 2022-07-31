@@ -3,6 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import GithubAPI from "utils/GithubAPI";
 
 import {POST_TYPE, RESPONSE_POST} from "types/types"
+import parseContentFromGithub from "utils/parseContentFromGithub";
 
 
 export default async function handler(
@@ -67,15 +68,4 @@ export default async function handler(
   }
 }
 
-function parseContentFromGithub<T>(githubData: any): T | undefined {
-  if (!Array.isArray(githubData)) {
-    let parsedGivenData = githubData as any;
-    //@ts-nocheck
-    let parsedData = Buffer.from(
-      parsedGivenData.content,
-      "base64"
-    ).toString() as T;
 
-    return parsedData;
-  }
-}
