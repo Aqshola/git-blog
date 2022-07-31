@@ -18,7 +18,7 @@ export default function Dashboard() {
   return (
     <LayouDashboard>
       <NextHead>
-        <title>Dashboard</title>
+        <title>Dashboard</title>1
       </NextHead>
       <Heading size={"2xl"}>Post</Heading>
       <NextLink href={"/admin/post/create"} passHref aria-label="New Post">
