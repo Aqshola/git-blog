@@ -11,6 +11,12 @@ Tech Stack used
 - [Octokit](https://octokit.github.io/rest.js/)
 - [TipTap WYSIWYG](https://tiptap.dev/)
 
+## How to use it
+- As always start with npm install
+- Create your github personal token, you can read it [here](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
+- Create Github OAuth App, you can read it [here](https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps)
+- Add everything on env
+- Don't worry you dont have to create content repository manually, it's automatically created while you created first post
 
 ## Upcoming Feature
 - [ ] Post Comment
