@@ -27,7 +27,7 @@ export default async function handler(
     const indexJson = await github.rest.repos.getContent({
       owner: username.data.login,
       path: `index.json`,
-      repo: `gitblog-content`,
+      repo: process.env.REPO_NAME||"",
     });
 
     let JsonData = parseContentFromGithub<any>(indexJson.data);
@@ -40,7 +40,7 @@ export default async function handler(
         const postDetailJson = await github.rest.repos.getContent({
           owner: username.data.login,
           path: indexPost.path,
-          repo: `gitblog-content`,
+          repo: process.env.REPO_NAME||"",
         });
         const htmlContent = parseContentFromGithub<string>(postDetailJson.data);
         res.status(200).send({

@@ -25,7 +25,7 @@ export default async function handler(
     const listPost = await github.rest.repos.getContent({
       owner: username.data.login,
       path: `index.json`,
-      repo: `gitblog-content`,
+      repo: process.env.REPO_NAME || "",
     });
     let parsedListPost = listPost.data as any;
 

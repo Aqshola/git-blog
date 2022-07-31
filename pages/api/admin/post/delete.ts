@@ -36,7 +36,7 @@ export default async function handler(
     const indexJson = await github.rest.repos.getContent({
       owner: username.data.login,
       path: `index.json`,
-      repo: `gitblog-content`,
+      repo: process.env.REPO_NAME||"",
     });
 
     let JsonData = parseContentFromGithub<any>(indexJson.data);
@@ -49,13 +49,13 @@ export default async function handler(
         const checkPostExist = await github.rest.repos.getContent({
           owner: username.data.login,
           path: `post/${slug}`,
-          repo: `gitblog-content`,
+          repo: process.env.REPO_NAME||"",
         });
 
         if (checkPostExist.data) {
           const pr = await github.createPullRequest({
             owner: username.data.login,
-            repo: "gitblog-content",
+            repo: process.env.REPO_NAME||"",
             title: `Delete new post ${title}`,
             body: "",
             head: slug,
@@ -78,7 +78,7 @@ export default async function handler(
           if (pr) {
             await github.rest.pulls.merge({
               owner: username.data.login,
-              repo: "gitblog-content",
+              repo: process.env.REPO_NAME||"",
               pull_number: pr?.data.number,
             });
             
