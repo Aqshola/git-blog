@@ -34,7 +34,7 @@ const Home: NextPage = () => {
       <NextHead>
         <title>Git Blog</title>
       </NextHead>
-      <Box px="10">
+      <Box px="10" pb={"10"}>
         <Box
           textColor={"white"}
           w={"full"}
