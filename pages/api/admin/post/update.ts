@@ -33,7 +33,7 @@ export default async function handler(
       const checkPostExist = await github.rest.repos.getContent({
         owner: username.data.login,
         path: `post/${slug}`,
-        repo: `gitblog-content`,
+        repo: process.env.REPO_NAME || "",
       });
 
       if (checkPostExist.data) {
@@ -47,7 +47,7 @@ export default async function handler(
         const path = `post/${slug}/content.html`;
         const pr = await github.createPullRequest({
           owner: username.data.login,
-          repo: "gitblog-content",
+          repo: process.env.REPO_NAME || "",
           title: `Create new post ${title}`,
           body: "",
           head: slug,
@@ -66,7 +66,7 @@ export default async function handler(
         if (pr) {
           await github.rest.pulls.merge({
             owner: username.data.login,
-            repo: "gitblog-content",
+            repo: process.env.REPO_NAME || "",
             pull_number: pr?.data.number,
           });
           return res

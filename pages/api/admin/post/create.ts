@@ -2,9 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { HTMLContent } from "@tiptap/react";
 import GithubAPI from "utils/GithubAPI";
-import {POST_TYPE, RESPONSE_POST}from "types/types"
-
-
+import { POST_TYPE, RESPONSE_POST } from "types/types";
 
 type BodyReq = {
   title: string;
@@ -13,15 +11,17 @@ type BodyReq = {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<RESPONSE_POST<POST_TYPE|null>>
+  res: NextApiResponse<RESPONSE_POST<POST_TYPE | null>>
 ) {
   const { method, body } = req;
   const github = GithubAPI();
 
   if (method !== "POST") {
-    res
-      .status(405)
-      .send({ data:null,status: "failed", errorMsg: "Only POST requests allowed" });
+    res.status(405).send({
+      data: null,
+      status: "failed",
+      errorMsg: "Only POST requests allowed",
+    });
     return;
   }
 
@@ -34,17 +34,17 @@ export default async function handler(
     try {
       await github.rest.repos.get({
         owner: username.data.login,
-        repo: `gitblog-content`,
+        repo: process.env.REPO_NAME || "",
       });
     } catch (error: any) {
       if (error.status === 404) {
         await github.rest.repos.createForAuthenticatedUser({
-          name: `gitblog-content`,
+          name: process.env.REPO_NAME || "",
           private: true,
         });
         github.request("PUT /repos/{owner}/{repo}/contents/{path}", {
           owner: "Aqshola",
-          repo: "gitblog-content",
+          repo: process.env.REPO_NAME || "",
           path: "index.json",
           message: "test push",
           content: Buffer.from(JSON.stringify([])).toString("base64"),
@@ -56,13 +56,15 @@ export default async function handler(
       const checkPostExist = await github.rest.repos.getContent({
         owner: username.data.login,
         path: `post/${slug}`,
-        repo: `gitblog-content`,
+        repo: process.env.REPO_NAME || "",
       });
 
       if (checkPostExist.data) {
-        res
-          .status(409)
-          .json({ data:null,status: "failed", errorMsg: "Post already exist" });
+        res.status(409).json({
+          data: null,
+          status: "failed",
+          errorMsg: "Post already exist",
+        });
         return;
       }
     } catch (error: any) {}
@@ -72,7 +74,7 @@ export default async function handler(
       const indexJson = await github.rest.repos.getContent({
         owner: username.data.login,
         path: `index.json`,
-        repo: `gitblog-content`,
+        repo: process.env.REPO_NAME || "",
       });
 
       if (Array.isArray(indexJson.data)) {
@@ -94,7 +96,7 @@ export default async function handler(
 
         const pr = await github.createPullRequest({
           owner: username.data.login,
-          repo: "gitblog-content",
+          repo: process.env.REPO_NAME || "",
           title: `Create new post ${title}`,
           body: "",
           head: slug,
@@ -120,24 +122,22 @@ export default async function handler(
         if (pr) {
           await github.rest.pulls.merge({
             owner: username.data.login,
-            repo: "gitblog-content",
+            repo: process.env.REPO_NAME || "",
             pull_number: pr?.data.number,
           });
           return res
             .status(200)
             .send({ data: { ...objectPost, content }, status: "success" });
-          
         } else {
           return res
             .status(500)
             .send({ data: null, status: "failed", errorMsg: "API ERROR" });
-          
         }
       }
     } catch (error) {
       console.log(error);
     }
   } catch (error) {
-    res.status(500).send({ data:null,status: "failed", errorMsg: error });
+    res.status(500).send({ data: null, status: "failed", errorMsg: error });
   }
 }
