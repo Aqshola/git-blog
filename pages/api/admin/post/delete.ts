@@ -5,6 +5,7 @@ import { HTMLContent,} from "@tiptap/react";
 import { createPullRequest } from "octokit-plugin-create-pull-request";
 import { RESPONSE_POST } from "types/types";
 import GithubAPI from "utils/GithubAPI";
+import parseContentFromGithub from "utils/parseContentFromGithub";
 
 
 
@@ -100,15 +101,4 @@ export default async function handler(
   }
 }
 
-function parseContentFromGithub<T>(githubData: any): T | undefined {
-  if (!Array.isArray(githubData)) {
-    let parsedGivenData = githubData as any;
-    //@ts-nocheck
-    let parsedData = Buffer.from(
-      parsedGivenData.content,
-      "base64"
-    ).toString() as T;
 
-    return parsedData;
-  }
-}
