@@ -18,7 +18,7 @@ export default function usePaging(): [
   });
   const Element = React.useMemo(() => {
     const PageList = ({ data }: Props) => (
-      <Flex mt={"10"} justifyContent={"center"} gap="5">
+      <Flex mt={"10"} w="full" justifyContent={"center"} gap="5">
         {Array.from(Array(Math.round(data.length / paging.length)).keys()).map(
           (el) => (
             <Button

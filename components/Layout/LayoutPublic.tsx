@@ -7,21 +7,22 @@ type Props = {
   searchProps?:{
     change:(e:any)=>void;
     value:string;
-  }
+  },
+  displaySearch?:boolean;
 };
 export default function LayoutPublic({ children,searchProps={
   value:"",
   change:()=>{}
-} }: Props) {
+},displaySearch=false }: Props) {
   return (
     <>
       <Flex p={"10"} justifyContent="space-between" alignItems={"center"}>
         <NextLink href={"/"}>
-          <Heading textColor={"facebook.700"} fontSize={"2xl"}>
+          <Heading cursor={"pointer"} textColor={"facebook.700"} fontSize={"2xl"}>
             Git-Blog
           </Heading>
         </NextLink>
-        <Input value={searchProps.value} onChange={searchProps.change} w="48" placeholder="Search" />
+        <Input display={displaySearch?"auto":"none"} value={searchProps.value} onChange={searchProps.change} w="48" placeholder="Search" />
       </Flex>
       {children}
     </>

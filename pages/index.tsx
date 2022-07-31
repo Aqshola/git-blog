@@ -15,6 +15,7 @@ import NextLink from "next/link";
 import LayoutPublic from "components/Layout/LayoutPublic";
 import { useState } from "react";
 import usePaging from "components/Pagination/Paging";
+import NextHead from "next/head"
 
 const Home: NextPage = () => {
   const { data } = useSWR("/api/admin/post/get", fetcher);
@@ -24,10 +25,13 @@ const Home: NextPage = () => {
   
 
   return (
-    <LayoutPublic searchProps={{
+    <LayoutPublic displaySearch={true} searchProps={{
       value:search,
       change:(e=>setsearch(e.target.value))
     }}>
+      <NextHead>
+        <title>Git Blog</title>
+      </NextHead>
       <Box p="10">
         <Heading as="h2" size={"lg"}>
           Post List
