@@ -79,53 +79,57 @@ export default async function handler(
       });
 
       let JsonData = parseContentFromGithub<any>(indexJson.data);
-      const objectPost = {
-        title: title,
-        path: `post/${slug}/content.html`,
-        createAt: new Date(),
-        slug: slug,
-      };
+      if (JsonData) {
+        JsonData = JSON.parse(JsonData) as Array<any>;
+        const objectPost = {
+          title: title,
+          path: `post/${slug}/content.html`,
+          createAt: new Date(),
+          slug: slug,
+        };
 
-      JsonData.unshift(objectPost);
+        JsonData.unshift(objectPost);
 
-      const pr = await github.createPullRequest({
-        owner: username.data.login,
-        repo: process.env.REPO_NAME || "",
-        title: `Create new post ${title}`,
-        body: "",
-        head: slug,
-        createWhenEmpty: true,
-
-        base: "main" /* optional: defaults to default branch */,
-        update:
-          false /* optional: set to `true` to enable updating existing pull requests */,
-        forceFork:
-          false /* optional: force creating fork even when user has write rights */,
-        changes: [
-          {
-            /* optional: if `files` is not passed, an empty commit is created instead */
-            files: {
-              [`post/${slug}/content.html`]: content,
-              [`index.json`]: JSON.stringify(JsonData),
-            },
-            commit: "NEW POST",
-          },
-        ],
-      });
-
-      if (pr) {
-        await github.rest.pulls.merge({
+        const pr = await github.createPullRequest({
           owner: username.data.login,
           repo: process.env.REPO_NAME || "",
-          pull_number: pr?.data.number,
+          title: `Create new post ${title}`,
+          body: "",
+          head: slug,
+          createWhenEmpty: true,
+
+          base: "main" /* optional: defaults to default branch */,
+          update:
+            false /* optional: set to `true` to enable updating existing pull requests */,
+          forceFork:
+            false /* optional: force creating fork even when user has write rights */,
+          changes: [
+            {
+              /* optional: if `files` is not passed, an empty commit is created instead */
+              files: {
+                [`post/${slug}/content.html`]: content,
+                [`index.json`]: JSON.stringify(JsonData),
+              },
+              commit: "NEW POST",
+            },
+          ],
         });
-        return res
-          .status(200)
-          .send({ data: { ...objectPost, content }, status: "success" });
-      } else {
-        return res
-          .status(500)
-          .send({ data: null, status: "failed", errorMsg: "API ERROR" });
+
+        if (pr) {
+          await github.rest.pulls.merge({
+            owner: username.data.login,
+            repo: process.env.REPO_NAME || "",
+            pull_number: pr?.data.number,
+          });
+          return res
+            .status(200)
+            .send({ data: { ...objectPost, content }, status: "success" });
+        } else {
+          console.log("errr");
+          return res
+            .status(500)
+            .send({ data: null, status: "failed", errorMsg: "API ERROR" });
+        }
       }
     } catch (error) {
       res.status(500).send({ data: null, status: "failed", errorMsg: error });

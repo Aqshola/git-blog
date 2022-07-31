@@ -18,14 +18,24 @@ export default function Create({}: Props) {
   const [create, status, error, loading] = useCreate();
 
   useEffect(() => {
-    if (!loading && status === "success") {
-      router.push("/admin/dashboard");
-      toast({
-        title: "Post Created Successfuly",
-        isClosable: true,
-        status: "success",
-        duration: 5000,
-      });
+    if (!loading) {
+      if( status === "success"){
+
+        router.push("/admin/dashboard");
+        toast({
+          title: "Post Created Successfuly",
+          isClosable: true,
+          status: "success",
+          duration: 5000,
+        });
+      }else{
+        toast({
+          title: "Failed Creating Post",
+          isClosable: true,
+          status: "error",
+          duration: 5000,
+        });
+      }
     }
   }, [loading]);
 
