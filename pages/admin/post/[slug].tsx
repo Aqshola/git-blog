@@ -8,7 +8,7 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import useTipTap from "../../../components/Editor.tsx/useTipTap";
+import useTipTap from "../../../components/Editor/useTipTap";
 import LayouDashboard from "../../../components/Layout/LayouDashboard";
 import useSwr, { useSWRConfig } from "swr";
 import { useToast } from "@chakra-ui/react";
@@ -62,7 +62,7 @@ export default function UpdatePost({}: Props) {
     if (!loadingRemove && statusRemove !=null)
      {
       if (statusRemove === "success") {
-        router.push("/dashboard");
+        router.push("/admin/dashboard");
         toast({
           title: `Post ${title} Removed`,
           isClosable: true,

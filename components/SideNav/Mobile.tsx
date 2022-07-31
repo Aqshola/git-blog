@@ -2,25 +2,21 @@ import React, { useState } from "react";
 import { HamburgerIcon } from "@chakra-ui/icons";
 import {
   Box,
-  Container,
   Flex,
-  Grid,
-  GridItem,
   Heading,
-  SimpleGrid,
   Stack,
-  StackDivider,
   Text,
   Button,
   Divider,
   Slide,
 } from "@chakra-ui/react";
 
-import { Avatar, AvatarBadge, AvatarGroup } from "@chakra-ui/react";
-type Props = {};
+import { Avatar } from "@chakra-ui/react";
+import { signOut, useSession } from "next-auth/react";
 
-export default function Mobile({}: Props) {
+export default function Mobile() {
   const [show, setshow] = useState<boolean>(false);
+  const { data } = useSession();
 
   function _handleShow(value: boolean) {
     setshow(value);
@@ -68,13 +64,15 @@ export default function Mobile({}: Props) {
           paddingY={"10"}
           h={"full"}
           zIndex="10"
-          
         >
           <Heading size={"lg"}>Git-Blog</Heading>
           <Box>
             <Text>Welcome Back</Text>
             <Flex mt={5} alignItems="center" gap={2}>
-              <Avatar name="Dan Abrahmov" src="https://bit.ly/dan-abramov" />
+              <Avatar
+                name={data?.user?.name || ""}
+                src={data?.user?.image || ""}
+              />
               <Heading size={"md"} as="h3">
                 Aqshola
               </Heading>
@@ -92,7 +90,13 @@ export default function Mobile({}: Props) {
               Post
             </Button>
           </Stack>
-          <Button w="fit-content" >
+
+          <Button
+            mt={"auto"}
+            width="fit-content"
+            type="submit"
+            onClick={() => signOut({ callbackUrl: "/admin/login" })}
+          >
             Log out
           </Button>
         </Box>

@@ -1,6 +1,5 @@
 import React from "react";
 import { Flex, Heading } from "@chakra-ui/react";
-import Link from "next/link";
 
 type Props = {
   slug: string;
@@ -9,8 +8,9 @@ type Props = {
 
 export default function Card({ ...props }: Props) {
   return (
-    <Link href={`/admin/post/${props.slug}`}>
+    
       <Flex
+      cursor={"pointer"}
         justifyContent={"space-between"}
         borderColor="WindowFrame"
         transition={"all 0.2s ease-in-out"}
@@ -19,13 +19,13 @@ export default function Card({ ...props }: Props) {
           textColor: "green",
           transform: "translateY(-10px)",
         }}
+        w="full"
         borderWidth={2}
-        mt={"10"}
         padding="5"
         rounded="md"
       >
-        <Heading size={"md"}>{props.title}</Heading>
+        <Heading w={"full"} textOverflow="ellipsis" size={"md"}>{props.title}</Heading>
       </Flex>
-    </Link>
+    
   );
 }

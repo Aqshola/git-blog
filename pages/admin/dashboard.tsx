@@ -1,11 +1,4 @@
-import {
-  Heading,
-  Stack,
-  Button,
-  Skeleton,
-  Spinner,
-  Box,
-} from "@chakra-ui/react";
+import { Heading, Stack, Button, Spinner, Box } from "@chakra-ui/react";
 
 import React, { useState } from "react";
 import Card from "../../components/Card/Card";
@@ -13,17 +6,19 @@ import LayouDashboard from "../../components/Layout/LayouDashboard";
 import NextLink from "next/link";
 import useSWR from "swr";
 import fetcher from "utils/fetcher";
+import usePaging from "components/Pagination/Paging";
 
 type Props = {};
 
 export default function Dashboard({}: Props) {
-  const { data, error } = useSWR("/api/admin/post/get", fetcher);
+  const { data } = useSWR("/api/admin/post/get", fetcher);
+  const [Paging, dataPaging] = usePaging();
 
   return (
     <LayouDashboard>
       <Heading size={"2xl"}>Post</Heading>
       <NextLink href={"/admin/post/create"} passHref aria-label="New Post">
-        <Button colorScheme={"green"} mt="10">
+        <Button mb={"10"} colorScheme={"green"} mt="10">
           New Post
         </Button>
       </NextLink>
@@ -33,7 +28,7 @@ export default function Dashboard({}: Props) {
           <Spinner size={"lg"} />
         </Box>
       )}
-      <Stack w={["full", "full", "xl"]} cursor="pointer" spacing={5}>
+      <Stack w={["full", "full", "xl"]} spacing={5}>
         {data && data.data.length == 0 && (
           <Heading mt={10} size="xl" fontWeight={"medium"}>
             No Post Yet 😟
@@ -43,11 +38,16 @@ export default function Dashboard({}: Props) {
         {data &&
           data.data.length > 0 &&
           data.data
-            .slice(0, 5)
+            .slice(dataPaging.active, dataPaging.length)
             .map((el: any, i: number) => (
-              <Card slug={el.slug} key={i} title={el.title} />
+              <NextLink passHref href={`/admin/post/${el.slug}`} key={el.slug}>
+                <a>
+                  <Card slug={el.slug} title={el.title} />
+                </a>
+              </NextLink>
             ))}
       </Stack>
+      {data && <Paging data={data.data} />}
     </LayouDashboard>
   );
 }
