@@ -24,6 +24,6 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
         return "/admin/login?error=true";
       },
     },
-    secret: process.env.JWT_SECRET
+    secret: process.env.NEXTAUTH_SECRET,
   });
 }
